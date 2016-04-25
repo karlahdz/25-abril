@@ -1,0 +1,44 @@
+###METODOS PARA PRONOSTICAR#######
+install.packages("fpp")
+library (fpp)
+base<-read.csv("C:\\Users\\SALA-C21\\Documents\\base1.csv")
+part<-ts(base[,1], start=2005, frequency=3)
+plot(part)
+Acf(part)
+###############MEDIA#########
+##meanf (part,h)
+partpro<-meanf(part,3)
+plot(partpro)
+## PART ES LA st
+##el numero de datos a proyectar en este caso elegi h=3
+#########INGENUO####
+partnai<-naive(part,3)
+plot(partnai)
+rwf(part,3) ##ALTERNATIVO
+##INGENUO ESTACIONAL
+partsnai<-snaive(part,3)
+plot(partsnai)
+##pronostica con base al ultimo periodo de los periodos anteriores
+#####METODO DE LA DERIVA#####
+partder<-rwf(part,3,drift = T) ##DRIFT ES PARA APLICAR EL METODO DE LA DERIVA
+partder
+plot(partder)
+##rwf(st, h, drift=TRUE)
+###EJEMPLO####
+part1<-window(part,start=2005, end=2010)
+partj1<-meanf(part1, h=3)
+partj2<-naive(part1, h=3)
+partj3<-snaive(part1,h=3)
+plot(partj1,plot.conf=FALSE, main="Proyección tasas de desempleo tres trimestres") ##si ponemos true nos incluye los intervalos de confianza
+lines(partj2$mean,col="pink")
+lines(partj3$mean,col="orange")
+lines(part1$mean,col=4)
+legend("topleft",lty=1,col=c(1,"pink","orange"), legend=c("metodo media", "metodo ingenuo","metodo ingenuo estacional"))
+##con legend graficamos todos los metodos juntos
+##con lines estamos graficando con los diferentes metodos para ver cual de los pronosticos se apega mas a la realidad
+###OTRA FORMA PARA GRAFICAR LOS TRES METODOS####
+plot(part,plot.conf=TRUE, main="Proyeccion tase de desempleo de los primeros tres trimestres")
+lines(partj2$mean,col="pink")
+lines(partj3$mean,col="orange")
+legend("topleft",lty=1,col=c(1,"pink","orange"),xlim=c(2005,2011), legend=c("metodo media", "metodo ingenuo","metodo ingenuo estacional"))
+##este método esta horrible es mejor usar el primero cortando nuestra serie de tiempo
